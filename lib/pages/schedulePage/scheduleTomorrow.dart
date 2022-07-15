@@ -1,30 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:iit_csu_app/constant.dart';
-import 'package:iit_csu_app/pages/schedulePage/scheduleCard.dart';
 
 import '../../models/lesson.dart';
+import 'components/tomorrowScheduleCard.dart';
 
 class ScheduleTomorrow extends StatelessWidget {
   const ScheduleTomorrow({
     Key? key,
     required this.day,
+    required this.functionL,
   }) : super(key: key);
 
   final Day day;
+  final void Function() functionL;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: lightBgColor,
+        leading: IconButton(onPressed: functionL, icon: Icon(Icons.chevron_left)),
+        backgroundColor: blueBgColor,
         title: Center(
           child: Text(
             'Завтра ${day.name}',
             style: const TextStyle(
-              color: darkBgColor,
+              color: darkInfoColor,
               fontSize: 20,
-              fontWeight: FontWeight.w500,
-              fontFamily: 'Rubik',
+              fontWeight: FontWeight.bold,
+              fontFamily: 'SF',
             ),
           ),
         ),
@@ -40,42 +43,6 @@ class ScheduleTomorrow extends StatelessWidget {
         itemBuilder: (context, index) {
           return ScheduleCardTomorrow(lesson: day.lessons[index]);
         },
-      ),
-    );
-  }
-}
-
-class ScheduleCardTomorrow extends StatelessWidget {
-  const ScheduleCardTomorrow({
-    Key? key,
-    required this.lesson,
-  }) : super(key: key);
-
-  final Lesson lesson;
-
-  @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Container(
-      height: 100,
-      width: size.width,
-      margin: const EdgeInsets.symmetric(vertical: 2.5),
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: lightBgColor,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(.25),
-              offset: const Offset(0, 0),
-              blurRadius: 30,
-              spreadRadius: 0),
-        ],
-      ),
-      child: ScheduleCardBody(
-        lesson: lesson,
-        mainInfoColor: lightInfoColor,
-        lessonIsNowTitle: '',
       ),
     );
   }

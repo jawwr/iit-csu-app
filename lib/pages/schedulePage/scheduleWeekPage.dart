@@ -1,164 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:iit_csu_app/models/lesson.dart';
 
-import '../../constant.dart';
+import 'components/weekScheduleAppBar.dart';
+import 'components/weekScheduleBody.dart';
 
-class ScheduleWeekPage extends StatelessWidget {
-  const ScheduleWeekPage({Key? key, required this.week}) : super(key: key);
+class ScheduleWeekPage extends StatefulWidget {
+  const ScheduleWeekPage(
+      {Key? key,
+      required this.schedule,
+      required this.currentWeekNumber,
+      required void Function() function})
+      : _function = function,
+        super(key: key);
 
-  final Week week;
+  final Schedule schedule;
+  final int currentWeekNumber;
+  final void Function() _function;
 
   @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: lightBgColor,
-        title: Center(
-          child: Text(
-            "Сейчас идет ${week.name}",
-            style: const TextStyle(
-              color: darkBgColor,
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-              fontFamily: 'Rubik',
-            ),
-          ),
-        ),
-      ),
-      body: Container(
-        height: size.height,
-        child: ListView.builder(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.only(
-            left: 10,
-            right: 10,
-            bottom: 10,
-          ),
-          itemCount: week.day.length,
-          itemBuilder: (context, index) => Container(
-            margin: const EdgeInsets.only(top: 20),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      week.day[index].name,
-                      style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-                WeekSchedule(
-                  day: week.day[index],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  State<ScheduleWeekPage> createState() => _ScheduleWeekPageState(
+        schedule: schedule,
+        currentWeek: currentWeekNumber,
+        function: _function,
+      );
 }
 
-class WeekSchedule extends StatelessWidget {
-  const WeekSchedule({
-    Key? key,
-    required this.day,
-  }) : super(key: key);
+class _ScheduleWeekPageState extends State<ScheduleWeekPage>
+    with TickerProviderStateMixin {
+  _ScheduleWeekPageState(
+      {required this.schedule, required this.currentWeek, required this.function});
 
-  final Day day;
+  final Schedule schedule;
+  late Week _currentWeek;
+  late TabController _controller;
+  int currentWeek;
+  final void Function() function;
 
   @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    List<LessonCard> lessonsName = [];
-    for (var lesson in day.lessons) {
-      lessonsName.add(LessonCard(lesson: lesson));
-    }
-
-    return Container(
-      width: size.width,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: lessonsName,
-      ),
+  void initState() {
+    super.initState();
+    _currentWeek = currentWeek == 0 ? schedule.firstWeek : schedule.secondWeek;
+    _controller = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: currentWeek,
+      animationDuration: const Duration(milliseconds: 200),
     );
   }
-}
-class LessonCard extends StatelessWidget {
-  const LessonCard({
-    Key? key,
-    required this.lesson,
-  }) : super(key: key);
-
-  final Lesson lesson;
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Container(
-      height: 60,
-      width: size.width,
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            offset: const Offset(0, 0),
-            color: Colors.black.withOpacity(.5),
-            blurRadius: 5,
-            spreadRadius: 1,
-          )
+    return DefaultTabController(
+      length: 2,
+      child: NestedScrollView(
+        floatHeaderSlivers: true,
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>
+            [
+          WeekScheduleAppBar(
+            currentWeek: _currentWeek,
+            controller: _controller,
+            functionR: function,
+          ),
         ],
-        borderRadius: BorderRadius.circular(5),
+        body: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: _controller,
+          children: [
+            WeekScheduleBody(week: schedule.firstWeek),
+            WeekScheduleBody(week: schedule.secondWeek),
+          ],
+        ),
       ),
-      child: LessonCardBody(lesson: lesson),
-    );
-  }
-}
-
-class LessonCardBody extends StatelessWidget {
-  const LessonCardBody({
-    Key? key,
-    required this.lesson,
-  }) : super(key: key);
-
-  final Lesson lesson;
-
-  @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Container(
-          width: size.width * .6,
-          child: Text(
-            lesson.name,
-            overflow: TextOverflow.fade,
-            style: const TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w300,
-              fontFamily: 'Rubik',
-            ),
-          ),
-        ),
-        Text(
-          "${lesson.timeStart.hour}:${lesson.timeStart.minute} - ${lesson.timeEnd.hour}:${lesson.timeEnd.minute}",
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w300,
-            fontFamily: 'Rubik',
-          ),
-        ),
-      ],
     );
   }
 }
