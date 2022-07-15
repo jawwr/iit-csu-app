@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iit_csu_app/models/event.dart';
 import 'package:iit_csu_app/services/calendarService.dart';
+import 'package:iit_csu_app/utils/notFoundPage.dart';
 
 import '../../constant.dart';
 import 'components/calendar.dart';
@@ -16,11 +17,24 @@ class CalendarPage extends StatefulWidget {
 class _CalendarPageState extends State<CalendarPage> {
   late List<Event> _events = [];
   bool _isLoad = false;
+  bool _isError = false;
 
   Future<void> _getAllEvents() async {
-    List<Event> responseEvent =
-        await CalendarService().getAllEvents().then((value) => value);
+    List<Event> responseEvent = [];
+    try{
+      responseEvent =
+      await CalendarService().getAllEvents().then((value) => value);
+    }catch(e){
+      print(e);
+      setState(() {
+        _isError = true;
+        _events = responseEvent;
+        _isLoad = true;
+      });
+      return;
+    }
     setState(() {
+      _isError = false;
       _events = responseEvent;
       _isLoad = true;
     });
@@ -60,11 +74,11 @@ class _CalendarPageState extends State<CalendarPage> {
               Calendar(
                 events: _events,
               ),
-              LastEvents(isLoad: _isLoad, events: _events)
+              !_isError ? LastEvents(isLoad: _isLoad, events: _events) : const NotFoundPage()
             ],
           ),
         ),
-      ),
+      )
     );
   }
 }

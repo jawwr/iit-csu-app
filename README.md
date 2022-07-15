@@ -1,7 +1,7 @@
-# iit_csu_app
+# IIT csu App
 
 A Flutter application for IIT moodle csu.
 
-## Getting Started
+## About app
 
 This project is a shell for IIT moodle
