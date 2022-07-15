@@ -11,7 +11,7 @@ class CalendarService {
 
   Future<List<Event>> getAllEvents() async {
     if (!_isNotFound && _lastGettingData != null &&
-        DateTime.now().difference(_lastGettingData!).inMinutes <= 30) {
+        DateTime.now().difference(_lastGettingData!).inMinutes <= 2) {
       return events;
     }
     //TODO переделать ссылку на свою api
