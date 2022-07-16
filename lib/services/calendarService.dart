@@ -1,31 +1,26 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:iit_csu_app/models/event.dart';
+import 'package:iit_csu_app/services/userService.dart';
+
+import '../models/calendarEvents.dart';
+import '../models/user.dart';
 
 class CalendarService {
-  final client = http.Client();
-  static List<Event> events = [];
-  static DateTime? _lastGettingData;
-  bool _isNotFound = false;
+  final User _user = UserService.user!;
+  final _client = http.Client();
+  static CalendarEvents? events;
 
-  Future<List<Event>> getAllEvents() async {
-    if (!_isNotFound && _lastGettingData != null &&
-        DateTime.now().difference(_lastGettingData!).inMinutes <= 2) {
-      return events;
-    }
-    //TODO переделать ссылку на свою api
-    final response = await client
-        .get(Uri.parse('https://62c1df322af60be89ecf22b2.mockapi.io/Event'));
+  Future<CalendarEvents> getAllEvents() async {
+
+    final response = await _client
+        .get(Uri.parse('http://10.0.2.2:8081/api/events?group=${_user.groupName}'));//TODO переделать ссылку на свою api
     if (response.statusCode == 200) {
-      Iterable l = json.decode(response.body);
-      events = List<Event>.from(l.map((model) => Event.fromJson(model)));
-      _lastGettingData = DateTime.now();
+      events = calendarEventsFromJson(utf8.decode(response.bodyBytes));
     } else {
-      _isNotFound = true;
       throw Exception('not found');
     }
-    return events;
+    return events!;
   }
 
   DateTime getDayStart() {

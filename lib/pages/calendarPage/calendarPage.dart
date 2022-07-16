@@ -23,7 +23,7 @@ class _CalendarPageState extends State<CalendarPage> {
     List<Event> responseEvent = [];
     try{
       responseEvent =
-      await CalendarService().getAllEvents().then((value) => value);
+      await CalendarService().getAllEvents().then((value) => value.events);
     }catch(e){
       print(e);
       setState(() {

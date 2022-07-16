@@ -21,12 +21,15 @@ class _AccountPageState extends State<AccountPage> {
   final MarkService _markService = MarkService();
   final UserService userService = UserService();
   bool _isLoaded = false;
+  final bool _isAuth = UserService.userIsAuth;
 
   @override
   void initState() {
     super.initState();
-    _getUserMarks();
-    _getUser();
+    if(_isAuth){
+      _getUserMarks();
+      _getUser();
+    }
   }
 
   Future<void> _getUserMarks() async {
@@ -37,7 +40,7 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Future<void> _getUser() async {
-    final user = await userService.getUser().then((value) => value);
+    final user = UserService.user!;
     setState(() {
       _user = user;
       _isLoaded = true;
@@ -62,12 +65,16 @@ class _AccountPageState extends State<AccountPage> {
           ),
         ),
       ),
-      body: AccountPageBody(
-        user: _user,
-        marks: _marks,
-        isLoaded: _isLoaded,
-        function: _getUserMarks,
-      ),
+      body: _isAuth
+          ? AccountPageBody(
+              user: _user,
+              marks: _marks,
+              isLoaded: _isLoaded,
+              function: _getUserMarks,
+            )
+          : Container(
+              color: redBgColor,
+            ),
     );
   }
 }

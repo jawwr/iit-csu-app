@@ -26,27 +26,26 @@ class AccountPageBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return RefreshIndicator(
       color: Colors.white,
       backgroundColor: blueBgColor,
       onRefresh: _function,
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            AccountPageHead(
-              user: _user,
-            ),
-            _isLoaded
-                ? AccountPageMarksSection(marks: _marks)
-                : const Center(
-              child: CircularProgressIndicator(
-                backgroundColor: blueBgColor,
+        child: _isLoaded
+            ? Column(
+                children: [
+                  AccountPageHead(
+                    user: _user,
+                  ),
+                  AccountPageMarksSection(marks: _marks)
+                ],
+              )
+            : const Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: blueBgColor,
+                ),
               ),
-            )
-          ],
-        ),
       ),
     );
   }

@@ -1,21 +1,27 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 import 'package:iit_csu_app/models/mark.dart';
 import 'package:iit_csu_app/services/userService.dart';
 
-class MarkService{
-  final UserService _service = UserService();
+import '../models/user.dart';
 
-  //TODO сделать нормально
+class MarkService{
+  final User _user = UserService.user!;
+  final _client = http.Client();
+  static List<Mark>? marks;
+
   Future<List<Mark>> getAllMarks() async{
-    final List<Mark> list = [
-      Mark('Программирование', '60'),
-      Mark('Математический анализ', '100'),
-      Mark('Базы данных', '50'),
-      Mark('Информатика', '74'),
-      Mark('Прикладная и оздоровительная физическая культура', '-'),
-      Mark('Дискретная математика', '-'),
-      Mark('Линейная алгебра', '12'),
-    ];
-    return list;
+    //TODO переделать ссылку на свою api
+    final response = await _client
+        .get(Uri.parse('http://10.0.2.2:8081/api/marks?userId=${_user.id}'));
+    if (response.statusCode == 200) {
+      Iterable l = json.decode(utf8.decode(response.bodyBytes));
+      marks = List<Mark>.from(l.map((model) => Mark.fromJson(model)));
+    } else {
+      throw Exception('not found');
+    }
+    return marks!;
   }
 
 }

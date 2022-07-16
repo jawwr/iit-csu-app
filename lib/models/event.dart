@@ -15,7 +15,7 @@ class Event {
   String eventName;
   DateTime dateEnd;
   String lessonName;
-  String id;
+  int id;
 
   factory Event.fromJson(Map<String, dynamic> json) => Event(
     eventName: json["eventName"],
