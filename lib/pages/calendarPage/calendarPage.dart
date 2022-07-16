@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:iit_csu_app/models/event.dart';
 import 'package:iit_csu_app/services/calendarService.dart';
+import 'package:iit_csu_app/services/userService.dart';
+import 'package:iit_csu_app/utils/notAuthPage.dart';
 import 'package:iit_csu_app/utils/notFoundPage.dart';
 
 import '../../constant.dart';
@@ -18,6 +20,7 @@ class _CalendarPageState extends State<CalendarPage> {
   late List<Event> _events = [];
   bool _isLoad = false;
   bool _isError = false;
+  bool _userIsAuth = UserService.userIsAuth;
 
   Future<void> _getAllEvents() async {
     List<Event> responseEvent = [];
@@ -43,7 +46,9 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   void initState() {
     super.initState();
-    _getAllEvents();
+    if(_userIsAuth){
+      _getAllEvents();
+    }
   }
 
   @override
@@ -63,7 +68,7 @@ class _CalendarPageState extends State<CalendarPage> {
           ),
         ),
       ),
-      body: RefreshIndicator(
+      body: _userIsAuth ? RefreshIndicator(
         color: Colors.white,
         backgroundColor: blueBgColor,
         onRefresh: _getAllEvents,
@@ -79,6 +84,7 @@ class _CalendarPageState extends State<CalendarPage> {
           ),
         ),
       )
+          : NotAuthPage()
     );
   }
 }

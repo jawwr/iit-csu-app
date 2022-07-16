@@ -13,16 +13,19 @@ class AccountPageBody extends StatelessWidget {
     required List<Mark> marks,
     required Future<void> Function() function,
     required bool isLoaded,
+    required void Function() exitFunction,
   })  : _user = user,
         _marks = marks,
         _function = function,
         _isLoaded = isLoaded,
+        _exitFunction = exitFunction,
         super(key: key);
 
   final bool _isLoaded;
   final Future<void> Function() _function;
   final User _user;
   final List<Mark> _marks;
+  final void Function() _exitFunction;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +40,7 @@ class AccountPageBody extends StatelessWidget {
                 children: [
                   AccountPageHead(
                     user: _user,
+                    function: _exitFunction,
                   ),
                   AccountPageMarksSection(marks: _marks)
                 ],

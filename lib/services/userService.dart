@@ -22,4 +22,9 @@ class UserService {
       user = userFromJson(utf8.decode(response.bodyBytes));
     }
   }
+  static Future<void> logOutUser() async{
+    http.post(Uri.parse('http://10.0.2.2:8081/api/user/logout'));
+    user = null;
+    userIsAuth = false;
+  }
 }

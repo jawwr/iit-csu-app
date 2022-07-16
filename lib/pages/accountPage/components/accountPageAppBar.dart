@@ -9,11 +9,14 @@ class AccountPageHead extends StatelessWidget {
   AccountPageHead({
     Key? key,
     required User user,
+    required void Function() function,
   })  : _user = user,
+        _function = function,
         super(key: key);
 
   final User _user;
   late final double _textSize = _getTextSize(_user.name, _user.surname);
+  final void Function() _function;
 
   double _getTextSize(String name, String surname) {
     int maxSize = max(name.length, surname.length);
@@ -91,7 +94,7 @@ class AccountPageHead extends StatelessWidget {
             ),
           ),
           GestureDetector(
-            onTap: () {},
+            onTap: _function,
             child: Container(
               width: size.width * .3,
               height: 40,

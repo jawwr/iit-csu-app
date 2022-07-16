@@ -17,10 +17,10 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final _pages = [
-    NewsPage(),
+    const NewsPage(),
     SchedulePage(),
-    CalendarPage(),
-    AccountPage()
+    const CalendarPage(),
+    const AccountPage()
   ];
 
   int _selectedPageIndex = 0;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iit_csu_app/services/markService.dart';
 import 'package:iit_csu_app/services/userService.dart';
+import 'package:iit_csu_app/utils/notAuthPage.dart';
 
 import '../../constant.dart';
 import '../../models/mark.dart';
@@ -21,7 +22,7 @@ class _AccountPageState extends State<AccountPage> {
   final MarkService _markService = MarkService();
   final UserService userService = UserService();
   bool _isLoaded = false;
-  final bool _isAuth = UserService.userIsAuth;
+  bool _isAuth = UserService.userIsAuth;
 
   @override
   void initState() {
@@ -40,9 +41,9 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Future<void> _getUser() async {
-    final user = UserService.user!;
+    final user = UserService.user;
     setState(() {
-      _user = user;
+      _user = user!;
       _isLoaded = true;
     });
   }
@@ -71,10 +72,14 @@ class _AccountPageState extends State<AccountPage> {
               marks: _marks,
               isLoaded: _isLoaded,
               function: _getUserMarks,
+              exitFunction: (){
+                UserService.logOutUser();
+                setState((){
+                  _isAuth = false;
+                });
+              },
             )
-          : Container(
-              color: redBgColor,
-            ),
+          : const NotAuthPage()
     );
   }
 }
