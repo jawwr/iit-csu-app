@@ -82,8 +82,8 @@ class _AccountPageState extends State<AccountPage> {
               marks: _marks,
               isLoaded: _isLoaded,
               function: _getUserMarks,
-              exitFunction: () {
-                UserService.logOutUser();
+              exitFunction: () async {
+                await userService.logOutUser();
                 setState(() {
                   _isAuth = false;
                 });
@@ -114,10 +114,11 @@ class _AccountPageState extends State<AccountPage> {
             EntryBtn(
               function: () async {
                 bool canUpdate = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            const AuthForm())); //Navigator.pushNamed(context, '/auth');
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AuthForm(),
+                  ),
+                );
                 if (canUpdate) {
                   _updateData();
                 }

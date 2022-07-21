@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iit_csu_app/constant.dart';
 import 'package:iit_csu_app/services/userService.dart';
 import 'package:iit_csu_app/utils/notAuthPage.dart';
@@ -13,7 +14,9 @@ class AuthForm extends StatefulWidget {
 class _AuthFormState extends State<AuthForm> {
   final TextEditingController _textController1 = TextEditingController();
   final TextEditingController _textController2 = TextEditingController();
+  final _service = UserService();
 
+  bool _isError = false;
   bool _isShow = false;
 
   @override
@@ -43,12 +46,31 @@ class _AuthFormState extends State<AuthForm> {
             children: [
               entryLoginForm(size, _textController1),
               entryPasswordForm(size, _textController2),
+              if (_isError)
+                const Text(
+                  'Ошибка авторизации',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontFamily: 'SF',
+                    fontSize: 17,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
               EntryBtn(
-                function: () async{
-                  await UserService.loginUser(
-                      _textController1.text, _textController2.text);
-                  if (!mounted) return;
-                  Navigator.pop(context, true);
+                function: () async {
+                  try {
+                    await _service.loginUser(
+                      email: _textController1.text,
+                      password: _textController2.text,
+                    );
+                    if (!mounted) return;
+                    Navigator.pop(context, true);
+                  } catch (e) {
+                    setState(() {
+                      _isError = true;
+                    });
+                    print(e);
+                  }
                 },
               )
             ],
@@ -106,7 +128,7 @@ class _AuthFormState extends State<AuthForm> {
                 });
               },
               icon: Icon(
-                _isShow ? Icons.remove_red_eye : Icons.remove_red_eye_outlined,
+                _isShow ? FontAwesomeIcons.eye : FontAwesomeIcons.eyeSlash,
                 color: additionalInfoColor,
               ),
             ),

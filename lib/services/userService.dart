@@ -1,13 +1,16 @@
 import 'dart:convert';
 
+import 'package:iit_csu_app/services/storageDataService.dart';
+
 import '../models/user.dart';
 import 'package:http/http.dart' as http;
 
 class UserService {
+  final _storage = StorageDataService();
   static User? user;
   static bool userIsAuth = false;
 
-  static Future<void> loginUser(String email, String password) async {
+  Future<void> loginUser({required String email, required String password}) async {
     final response = await http.post(
       Uri.parse('http://10.0.2.2:8081/api/user/login'),
       headers: <String, String>{
@@ -20,11 +23,25 @@ class UserService {
       userIsAuth = true;
       final response = await http.get(Uri.parse('http://10.0.2.2:8081/api/user/authUser'));
       user = userFromJson(utf8.decode(response.bodyBytes));
+      _storage.setLoginData(email);
+      _storage.setPasswordData(password);
+    }else{
+      throw Exception('Ошибка авторизации');
     }
   }
-  static Future<void> logOutUser() async{
+
+  Future<void> entryWithStorageData() async{
+    String? login = await _storage.readLoginData();
+    String? password = await _storage.readLoginData();
+    if(login != null && password != null){
+      loginUser(email: login, password: password);
+    }
+  }
+
+  Future<void> logOutUser() async{
     http.post(Uri.parse('http://10.0.2.2:8081/api/user/logout'));
     user = null;
     userIsAuth = false;
+    _storage.exit();
   }
 }

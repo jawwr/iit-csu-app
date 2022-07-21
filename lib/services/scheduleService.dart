@@ -42,8 +42,32 @@ class ScheduleService{
   Week getCurrentWeek(Schedule schedule){
     DateTime today = DateTime.now();
     DateTime startDay = DateTime(today.year);
+    if(today.month >= DateTime.september){
+      startDay = _findStartMonday(today.year, DateTime.september);
+    }else{
+      if(today.month >= DateTime.february){
+        startDay = _findStartMonday(today.year, DateTime.february);
+      }else{
+        startDay = _findStartMonday(today.year - 1, DateTime.september);
+      }
+    }
     var differenceBetweenDate = today.difference(startDay);
     return ((differenceBetweenDate.inDays / 7) % 2).floor() == 0 ? schedule.firstWeek : schedule.secondWeek;
+  }
+
+  DateTime _findStartMonday(int year, int month) {
+    var day = DateTime(year, month);
+    if (day.weekday != DateTime.monday) {
+      for (int i = day.weekday; i > -7; i--) {
+        day = DateTime(year, month, i);
+        if (day.weekday == DateTime.monday) {
+          return day;
+        }
+      }
+    } else {
+      return day;
+    }
+    throw Exception('День не найден');
   }
 
 }
