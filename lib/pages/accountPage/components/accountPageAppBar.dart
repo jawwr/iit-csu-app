@@ -32,7 +32,7 @@ class AccountPageHead extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return Container(
       width: size.width,
-      height: size.height * .35,
+      height: size.height * .4,
       decoration: const BoxDecoration(
         color: blueBgColor,
         borderRadius: BorderRadius.only(
@@ -45,7 +45,7 @@ class AccountPageHead extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
-            height: size.height * .25,
+            height: size.height * .3,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -97,7 +97,7 @@ class AccountPageHead extends StatelessWidget {
             onTap: _function,
             child: Container(
               width: size.width * .3,
-              height: 40,
+              height: size.height * .06,
               decoration: BoxDecoration(
                 color: lightBgColor,
                 borderRadius: BorderRadius.circular(10),

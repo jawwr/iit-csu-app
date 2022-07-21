@@ -18,19 +18,19 @@ class ScheduleTomorrow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: functionL, icon: Icon(Icons.chevron_left)),
+        leading:
+            IconButton(onPressed: functionL, icon: Icon(Icons.chevron_left)),
         backgroundColor: blueBgColor,
-        title: Center(
-          child: Text(
-            'Завтра ${day.name}',
-            style: const TextStyle(
-              color: darkInfoColor,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'SF',
-            ),
+        title: Text(
+          'Завтра ${day.name}',
+          style: const TextStyle(
+            color: darkInfoColor,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'SF',
           ),
         ),
+        centerTitle: true,
       ),
       body: ListView.builder(
         physics: const BouncingScrollPhysics(),

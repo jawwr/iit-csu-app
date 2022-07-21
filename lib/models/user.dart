@@ -16,14 +16,15 @@ class User {
     required this.groupName,
     this.marks,
   });
+  User.user();
 
-  int id;
-  String name;
-  String surname;
-  String email;
-  String password;
-  String groupName;
-  List<Mark>? marks;
+  late int id;
+  late String name;
+  late String surname;
+  late String email;
+  late String password;
+  late String groupName;
+  late List<Mark>? marks;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
     id: json["id"],

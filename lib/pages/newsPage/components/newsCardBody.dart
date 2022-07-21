@@ -55,7 +55,7 @@ class NewsBody extends StatelessWidget {
                       fontFamily: 'SF',
                       fontWeight: FontWeight.w500,
                       color: lightInfoColor),
-                  maxLines: 7,
+                  maxLines: 6,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),

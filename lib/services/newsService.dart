@@ -21,6 +21,8 @@ class NewsService{
       Iterable l = json.decode(utf8.decode(response.bodyBytes));
       news = List<News>.from(l.map((model) => News.fromJson(model)));
       _lastGettingData = DateTime.now();
+    }else{
+      throw Exception('Нет соединения');
     }
     for(var news in news!){
       news.hasImage = await _checkImageExist(news.image);

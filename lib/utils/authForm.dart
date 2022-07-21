@@ -3,11 +3,18 @@ import 'package:iit_csu_app/constant.dart';
 import 'package:iit_csu_app/services/userService.dart';
 import 'package:iit_csu_app/utils/notAuthPage.dart';
 
-class AuthForm extends StatelessWidget {
-  AuthForm({Key? key}) : super(key: key);
+class AuthForm extends StatefulWidget {
+  const AuthForm({Key? key}) : super(key: key);
 
+  @override
+  State<AuthForm> createState() => _AuthFormState();
+}
+
+class _AuthFormState extends State<AuthForm> {
   final TextEditingController _textController1 = TextEditingController();
   final TextEditingController _textController2 = TextEditingController();
+
+  bool _isShow = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +41,14 @@ class AuthForm extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              entryForm(size, 'Логин', _textController1),
-              entryForm(size, 'Пароль', _textController2),
+              entryLoginForm(size, _textController1),
+              entryPasswordForm(size, _textController2),
               EntryBtn(
-                function: () {
-                  UserService.loginUser(_textController1.text, _textController2.text);
-                  Navigator.pop(context);
+                function: () async{
+                  await UserService.loginUser(
+                      _textController1.text, _textController2.text);
+                  if (!mounted) return;
+                  Navigator.pop(context, true);
                 },
               )
             ],
@@ -49,35 +58,69 @@ class AuthForm extends StatelessWidget {
     );
   }
 
-  Container entryForm(Size size, String hint, textController) {
+  Widget entryLoginForm(Size size, textController) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: blueBgColor,
-                  width: 2
-                ),
-                borderRadius: BorderRadius.circular(10)
+      decoration: BoxDecoration(
+          border: Border.all(color: blueBgColor, width: 2),
+          borderRadius: BorderRadius.circular(10)),
+      width: size.width * .8,
+      height: 50,
+      padding: const EdgeInsets.all(5),
+      child: TextField(
+        obscureText: false,
+        controller: textController,
+        cursorColor: blueBgColor,
+        decoration: const InputDecoration(
+            alignLabelWithHint: true,
+            border: InputBorder.none,
+            hintText: 'Логин',
+            hintStyle: TextStyle(
+                color: additionalInfoColor,
+                fontFamily: 'SF',
+                fontSize: 15,
+                fontWeight: FontWeight.w500)),
+        autocorrect: false,
+      ),
+    );
+  }
+
+  Widget entryPasswordForm(Size size, textController) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+          border: Border.all(color: blueBgColor, width: 2),
+          borderRadius: BorderRadius.circular(10)),
+      width: size.width * .8,
+      height: 50,
+      padding: const EdgeInsets.all(5),
+      child: TextField(
+        obscureText: !_isShow,
+        controller: textController,
+        cursorColor: blueBgColor,
+        decoration: InputDecoration(
+            suffixIcon: IconButton(
+              onPressed: () {
+                setState(() {
+                  _isShow = !_isShow;
+                });
+              },
+              icon: Icon(
+                _isShow ? Icons.remove_red_eye : Icons.remove_red_eye_outlined,
+                color: additionalInfoColor,
               ),
-              width: size.width * .8,
-              height: 50,
-              padding: EdgeInsets.all(5),
-              child: TextField(
-                controller: textController,
-                cursorColor: blueBgColor,
-                decoration: InputDecoration(
-                  alignLabelWithHint: true,
-                  border: InputBorder.none,
-                  hintText: hint,
-                  hintStyle: const TextStyle(
-                    color: additionalInfoColor,
-                    fontFamily: 'SF',
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500
-                  )
-                ),
-                autocorrect: false,
-              ),
-            );
+            ),
+            suffixIconColor: Colors.black,
+            alignLabelWithHint: true,
+            border: InputBorder.none,
+            hintText: 'Пароль',
+            hintStyle: const TextStyle(
+                color: additionalInfoColor,
+                fontFamily: 'SF',
+                fontSize: 15,
+                fontWeight: FontWeight.w500)),
+        autocorrect: false,
+      ),
+    );
   }
 }
