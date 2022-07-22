@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:iit_csu_app/pages/home/homePage.dart';
 import 'package:iit_csu_app/services/userService.dart';
 import 'package:iit_csu_app/themeConstants.dart';
