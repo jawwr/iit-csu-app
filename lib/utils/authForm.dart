@@ -60,7 +60,7 @@ class _AuthFormState extends State<AuthForm> {
                 function: () async {
                   try {
                     await _service.loginUser(
-                      email: _textController1.text,
+                      login: _textController1.text,
                       password: _textController2.text,
                     );
                     if (!mounted) return;

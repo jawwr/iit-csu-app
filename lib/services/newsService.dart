@@ -16,7 +16,7 @@ class NewsService{
         DateTime.now().difference(_lastGettingData!).inMinutes <= 2){
       return news!;
     }
-    final response = await _client.get(Uri.parse('http://10.0.2.2:8081/api/news'));//TODO поменять ссылку на наш api
+    final response = await _client.get(Uri.parse('http://10.0.2.2:8081/api/news'));//TODO поменять ссылку на свою api
     if(response.statusCode == 200){
       Iterable l = json.decode(utf8.decode(response.bodyBytes));
       news = List<News>.from(l.map((model) => News.fromJson(model)));
