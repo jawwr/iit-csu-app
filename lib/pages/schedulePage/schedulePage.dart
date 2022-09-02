@@ -8,12 +8,12 @@ import '../../models/lesson.dart';
 
 class SchedulePage extends StatelessWidget {
   final ScheduleService service = ScheduleService();
-  final Schedule _allSchedule =
-      scheduleFromJson(ScheduleService().getSchedule());
+  late Schedule _allSchedule;
   final PageController pageController = PageController(initialPage: 1);
 
   @override
   Widget build(BuildContext context) {
+    // _getSchedule();
     final Day today = service.getToday(_allSchedule);
     final Day tomorrow = service.getTomorrow(_allSchedule);
     final int currentWeekNumber =
@@ -59,5 +59,13 @@ class SchedulePage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _getSchedule() async{
+    try {
+      _allSchedule = await service.getSchedule().then((value) => value);
+    }catch(e){
+      print(e);
+    }
   }
 }

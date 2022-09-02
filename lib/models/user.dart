@@ -11,7 +11,7 @@ class User {
     required this.id,
     required this.name,
     required this.surname,
-    required this.email,
+    required this.login,
     required this.password,
     required this.groupName,
     this.marks,
@@ -21,7 +21,7 @@ class User {
   late int id;
   late String name;
   late String surname;
-  late String email;
+  late String login;
   late String password;
   late String groupName;
   late List<Mark>? marks;
@@ -30,7 +30,7 @@ class User {
     id: json["id"],
     name: json["name"],
     surname: json["surname"],
-    email: json["email"],
+    login: json["email"],
     password: json["password"],
     groupName: json["groupName"],
     marks: List<Mark>.from(json["marks"].map((x) => Mark.fromJson(x))),
@@ -40,7 +40,7 @@ class User {
     "id": id,
     "name": name,
     "surname": surname,
-    "email": email,
+    "email": login,
     "password": password,
     "groupName": groupName,
     "marks": List<dynamic>.from(marks!.map((x) => x.toJson())),

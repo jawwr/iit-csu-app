@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:iit_csu_app/services/userService.dart';
@@ -7,13 +8,22 @@ import '../models/calendarEvents.dart';
 import '../models/user.dart';
 
 class CalendarService {
-  final User _user = UserService.user!;
+  final User? _user = UserService.userIsAuth ? UserService.user! : null;
   final _client = http.Client();
   static CalendarEvents? events;
 
   Future<CalendarEvents> getAllEvents() async {
-    final response = await _client.get(Uri.parse(
-        'http://10.0.2.2:8081/api/events?group=${_user.groupName}')); //TODO переделать ссылку на свою api
+    final queryParameters = {"login": _user!.login};
+    final uri = Uri.http('http://10.0.2.2:8082/api/events', '/path', queryParameters);
+    final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
+    final response = await http.get(uri, headers: headers);
+    // final response = await http.get(
+    //     Uri.parse('http://10.0.2.2:8081/api/events'),
+    //   headers: <String, String>{
+    //   'Content-Type': 'application/json; charset=UTF-8',
+    // },
+    //   body: jsonEncode(
+    //       <String, String>{'login': _user.login, 'password': _user.password}),); //TODO переделать ссылку на свою api
     if (response.statusCode == 200) {
       events = calendarEventsFromJson(utf8.decode(response.bodyBytes));
     } else {

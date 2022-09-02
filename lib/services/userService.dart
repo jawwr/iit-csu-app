@@ -10,9 +10,10 @@ class UserService {
   static User? user;
   static bool userIsAuth = false;
 
+
   Future<void> loginUser({required String login, required String password}) async {
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:8081/api/user/login'),
+      Uri.parse('http://10.0.2.2:8082/api/auth/signIn'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -21,8 +22,8 @@ class UserService {
     );
     if(response.statusCode == 200){
       userIsAuth = true;
-      final response = await http.get(Uri.parse('http://10.0.2.2:8081/api/user/authUser'));
-      user = userFromJson(utf8.decode(response.bodyBytes));
+      // final response = await http.get(Uri.parse('http://10.0.2.2:8081/api/user/authUser'));
+      // user = userFromJson(utf8.decode(response.bodyBytes));
       _storage.setLoginData(login);
       _storage.setPasswordData(password);
     }else{
