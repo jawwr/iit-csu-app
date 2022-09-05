@@ -18,7 +18,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final _pages = [
     const NewsPage(),
-    SchedulePage(),
+    const SchedulePage(),
     const CalendarPage(),
     const AccountPage()
   ];

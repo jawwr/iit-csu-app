@@ -1,8 +1,8 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 abstract class _StoragePreferenceKey{
-  static const String loginKey = 'name_key';
-  static const String passwordKey = 'name_key';
+  static const String loginKey = 'login_key';
+  static const String passwordKey = 'password_key';
 }
 
 class StorageDataService{
@@ -17,7 +17,7 @@ class StorageDataService{
   }
 
   Future<void> setLoginData(String login) async{
-    _storage.write(key: _StoragePreferenceKey.passwordKey, value: login);
+    _storage.write(key: _StoragePreferenceKey.loginKey, value: login);
   }
 
   Future<void> setPasswordData(String password) async{

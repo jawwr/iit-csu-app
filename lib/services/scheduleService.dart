@@ -9,13 +9,15 @@ import 'package:iit_csu_app/services/userService.dart';
 import '../models/user.dart';
 
 class ScheduleService{
-  final User? _user = UserService.userIsAuth ? UserService.user! : null;
+  final UserService _service = UserService();
   static Schedule? schedule;
 
   //TODO сделать нормальное получение расписания
   Future<Schedule> getSchedule() async {
-    final queryParameters = {"login": _user!.login};
-    final uri = Uri.http('http://10.0.2.2:8081/api/schedule', '/path', queryParameters);
+    final String? login = await _service.getStorageDataLogin().then((value) => value);
+    print("login: ${login}");
+    final queryParameters = {"login": login};
+    final uri = Uri.http('http://10.0.2.2:8082/api/schedule', '/path', queryParameters);
     final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
     final response = await http.get(uri, headers: headers);
     // final response = await http.get(

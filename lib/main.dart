@@ -6,8 +6,8 @@ import 'package:iit_csu_app/utils/authForm.dart';
 import 'package:iit_csu_app/utils/notFoundPage.dart';
 
 void main() {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // UserService().entryWithStorageData();
+  WidgetsFlutterBinding.ensureInitialized();
+  UserService().entryWithStorageData();
   runApp(const MyApp());
 }
 

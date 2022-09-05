@@ -8,12 +8,13 @@ import '../models/calendarEvents.dart';
 import '../models/user.dart';
 
 class CalendarService {
-  final User? _user = UserService.userIsAuth ? UserService.user! : null;
+  final UserService _service = UserService();
   final _client = http.Client();
   static CalendarEvents? events;
 
   Future<CalendarEvents> getAllEvents() async {
-    final queryParameters = {"login": _user!.login};
+    final String? login = await _service.getStorageDataLogin().then((value) => value);
+    final queryParameters = {"login": login};
     final uri = Uri.http('http://10.0.2.2:8082/api/events', '/path', queryParameters);
     final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
     final response = await http.get(uri, headers: headers);

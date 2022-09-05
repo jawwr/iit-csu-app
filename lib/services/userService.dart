@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:iit_csu_app/services/storageDataService.dart';
 
@@ -22,21 +23,35 @@ class UserService {
     );
     if(response.statusCode == 200){
       userIsAuth = true;
-      // final response = await http.get(Uri.parse('http://10.0.2.2:8081/api/user/authUser'));
-      // user = userFromJson(utf8.decode(response.bodyBytes));
       _storage.setLoginData(login);
       _storage.setPasswordData(password);
+      // user = await _getUserData(login);
     }else{
       throw Exception('Ошибка авторизации');
     }
   }
 
+  Future<User> _getUserData(String login) async{
+    final queryParameters = {"login": login};
+    final uri = Uri.http('localhost:8082/api/user/me', '/path', queryParameters);
+    final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
+    final response = await http.get(uri, headers: headers);
+    User user = userFromJson(utf8.decode(response.bodyBytes));
+    return user;
+  }
+
   Future<void> entryWithStorageData() async{
     String? login = await _storage.readLoginData();
-    String? password = await _storage.readLoginData();
+    String? password = await _storage.readPasswordData();
+    print("автоматический вход");
     if(login != null && password != null){
       loginUser(login: login, password: password);
     }
+  }
+
+  Future<String?> getStorageDataLogin() async{
+    String? login = await _storage.readLoginData();
+    return login;
   }
 
   Future<void> logOutUser() async{
