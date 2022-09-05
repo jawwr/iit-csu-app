@@ -25,19 +25,39 @@ class UserService {
       userIsAuth = true;
       _storage.setLoginData(login);
       _storage.setPasswordData(password);
-      // user = await _getUserData(login);
+      user = await _getUserData(login);
     }else{
       throw Exception('Ошибка авторизации');
     }
   }
 
   Future<User> _getUserData(String login) async{
-    final queryParameters = {"login": login};
-    final uri = Uri.http('localhost:8082/api/user/me', '/path', queryParameters);
-    final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
-    final response = await http.get(uri, headers: headers);
-    User user = userFromJson(utf8.decode(response.bodyBytes));
-    return user;
+    var request = http.Request(
+      'GET',
+      Uri.parse("http://10.0.2.2:8082/api/user/me"),
+    )
+      ..headers.addAll({
+      'Content-Type': 'application/json; charset=UTF-8',
+      })
+      ..body = jsonEncode({
+      "login": login
+    });
+    http.StreamedResponse response = await request.send();
+
+
+    // final queryParameters = {"login": login};
+    // final uri = Uri.http('localhost:8082/api/user/me', '/path', queryParameters);
+    // final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
+    // final response = await http.get(uri, headers: headers);
+
+    if(response.statusCode == 200){
+      var responseBody = await response.stream.bytesToString();
+      User user = userFromJson(responseBody);
+      return user;
+    }
+    else{
+      throw Exception("Not Found");
+    }
   }
 
   Future<void> entryWithStorageData() async{

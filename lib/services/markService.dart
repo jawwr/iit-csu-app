@@ -14,7 +14,7 @@ class MarkService{
     final User user = UserService.user!;
     //TODO переделать ссылку на свою api
     final response = await _client
-        .get(Uri.parse('http://10.0.2.2:8081/api/marks?userId=${user.id}'));
+        .get(Uri.parse('http://10.0.2.2:8081/api/marks'));
     if (response.statusCode == 200) {
       Iterable l = json.decode(utf8.decode(response.bodyBytes));
       marks = List<Mark>.from(l.map((model) => Mark.fromJson(model)));
