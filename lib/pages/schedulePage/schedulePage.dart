@@ -19,7 +19,7 @@ class SchedulePage extends StatefulWidget {
 
 class _SchedulePageState extends State<SchedulePage> {
   final ScheduleService service = ScheduleService();
-  late Schedule _allSchedule;
+  late Schedule _allSchedule = Schedule(firstWeek: Week(name: "", day: []), secondWeek: Week(name: "", day: []));
   final PageController pageController = PageController(initialPage: 1);
   bool _isAuth = UserService.userIsAuth;
   late Day _today;

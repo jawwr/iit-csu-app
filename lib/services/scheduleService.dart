@@ -1,12 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:iit_csu_app/models/lesson.dart';
 import 'package:iit_csu_app/services/userService.dart';
-
-import '../models/user.dart';
 
 class ScheduleService{
   final UserService _service = UserService();
@@ -15,11 +12,23 @@ class ScheduleService{
   //TODO сделать нормальное получение расписания
   Future<Schedule> getSchedule() async {
     final String? login = await _service.getStorageDataLogin().then((value) => value);
-    print("login: ${login}");
-    final queryParameters = {"login": login};
-    final uri = Uri.http('http://10.0.2.2:8082/api/schedule', '/path', queryParameters);
-    final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
-    final response = await http.get(uri, headers: headers);
+
+    var request = http.Request(
+      'GET',
+      Uri.parse("http://10.0.2.2:8082/api/schedule"),
+    )
+      ..headers.addAll({
+        'Content-Type': 'application/json; charset=UTF-8',
+      })
+      ..body = jsonEncode({
+        "login": login
+      });
+    final response = await request.send();
+
+    // final queryParameters = {"login": login};
+    // final uri = Uri.http('http://10.0.2.2:8082/api/schedule', '/path', queryParameters);
+    // final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
+    // final response = await http.get(uri, headers: headers);
     // final response = await http.get(
     //     Uri.parse('http://10.0.2.2:8081/api/events'),
     //   headers: <String, String>{
@@ -28,7 +37,8 @@ class ScheduleService{
     //   body: jsonEncode(
     //       <String, String>{'login': _user.login, 'password': _user.password}),); //TODO переделать ссылку на свою api
     if (response.statusCode == 200) {
-      schedule = scheduleFromJson(utf8.decode(response.bodyBytes));
+      var responseBody = await response.stream.bytesToString();
+      schedule = scheduleFromJson(responseBody);
     } else {
       throw Exception('not found');
     }
