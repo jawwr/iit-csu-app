@@ -18,7 +18,7 @@ class News {
 
   factory News.fromJson(Map<String, dynamic> json) => News(
     id: json["id"],
-    image: json["image"],
+    image: json["photo"],
     text: json["text"],
   );
 

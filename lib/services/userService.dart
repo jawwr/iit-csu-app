@@ -45,11 +45,6 @@ class UserService {
     http.StreamedResponse response = await request.send();
 
 
-    // final queryParameters = {"login": login};
-    // final uri = Uri.http('localhost:8082/api/user/me', '/path', queryParameters);
-    // final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
-    // final response = await http.get(uri, headers: headers);
-
     if(response.statusCode == 200){
       var responseBody = await response.stream.bytesToString();
       User user = userFromJson(responseBody);
