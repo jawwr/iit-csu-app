@@ -14,8 +14,8 @@ class Schedule {
   Week secondWeek;
 
   factory Schedule.fromJson(Map<String, dynamic> json) => Schedule(
-    firstWeek: Week.fromJson(json["first_week"]),
-    secondWeek: Week.fromJson(json["second_week"]),
+    firstWeek: Week.fromJson(json["firstWeek"]),
+    secondWeek: Week.fromJson(json["secondWeek"]),
   );
 }
 
@@ -30,7 +30,7 @@ class Week {
 
   factory Week.fromJson(Map<String, dynamic> json) => Week(
     name: json["name"],
-    day: List<Day>.from(json["day"].map((x) => Day.fromJson(x))),
+    day: List<Day>.from(json["days"].map((x) => Day.fromJson(x))),
   );
 }
 
@@ -70,7 +70,7 @@ class Lesson {
     name: json["name"],
     teacher: json["teacher"],
     auditorium: json["auditorium"],
-    timeStart: TimeOfDay(hour: int.parse(json["time_start"].split(':')[0]), minute: int.parse(json["time_start"].split(':')[1])),
-    timeEnd: TimeOfDay(hour: int.parse(json["time_end"].split(':')[0]),minute: int.parse( json["time_end"].split(':')[1])),
+    timeStart: TimeOfDay(hour: int.parse(json["timeStart"].split(':')[0]), minute: int.parse(json["timeStart"].split(':')[1])),
+    timeEnd: TimeOfDay(hour: int.parse(json["timeEnd"].split(':')[0]),minute: int.parse( json["timeEnd"].split(':')[1])),
   );
 }

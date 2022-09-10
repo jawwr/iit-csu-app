@@ -58,7 +58,6 @@ class UserService {
   Future<void> entryWithStorageData() async{
     String? login = await _storage.readLoginData();
     String? password = await _storage.readPasswordData();
-    print("автоматический вход");
     if(login != null && password != null){
       loginUser(login: login, password: password);
     }

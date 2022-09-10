@@ -8,6 +8,7 @@ import 'package:iit_csu_app/services/userService.dart';
 class ScheduleService{
   final UserService _service = UserService();
   static Schedule? schedule;
+  final _dayOfWeek = ['Понедельник','Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
 
   //TODO сделать нормальное получение расписания
   Future<Schedule> getSchedule() async {
@@ -60,19 +61,34 @@ class ScheduleService{
     int today = DateTime.now().weekday - 1;
     if(today == 6){
       today = 0;
-      today = 0;
     }
+    var todayName = _dayOfWeek[today];
     Week currentWeek = getCurrentWeek(schedule);
-    return currentWeek.day[today];
+    return _findDayInWeekByName(todayName, currentWeek);
+  }
+
+  Day _findDayInWeekByName(String name, Week week){
+    for(var day in week.day){
+      if(day.name == name){
+        return day;
+      }
+    }
+    throw Exception('День не найден');
   }
 
   Day getTomorrow(Schedule schedule){
     int tomorrow = DateTime.now().weekday;
+    Week week = getCurrentWeek(schedule);
     if(tomorrow >= 6){
       tomorrow = 0;
+      if(week.name == 'Первая неделя'){
+        week = schedule.secondWeek;
+      }else{
+        week = schedule.firstWeek;
+      }
     }
-    Week currentWeek = getCurrentWeek(schedule);
-    return currentWeek.day[tomorrow];
+    var todayName = _dayOfWeek[tomorrow];
+    return _findDayInWeekByName(todayName, week);
   }
 
   Week getCurrentWeek(Schedule schedule){

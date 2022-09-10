@@ -19,23 +19,19 @@ class SchedulePage extends StatefulWidget {
 
 class _SchedulePageState extends State<SchedulePage> {
   final ScheduleService service = ScheduleService();
-  late Schedule _allSchedule = Schedule(firstWeek: Week(name: "", day: []), secondWeek: Week(name: "", day: []));
+  Schedule? _allSchedule;
   final PageController pageController = PageController(initialPage: 1);
   bool _isAuth = UserService.userIsAuth;
-  late Day _today;
-  late Day _tomorrow;
-  late int _currentWeekNumber;
-
+  Day? _today;
+  Day? _tomorrow;
+  int _currentWeekNumber = -1;
 
   @override
   void initState() {
     super.initState();
-    if(_isAuth){
+    if (_isAuth) {
       _getSchedule();
-      _today = service.getToday(_allSchedule);
-      _tomorrow = service.getTomorrow(_allSchedule);
-      _currentWeekNumber =
-        service.getCurrentWeek(_allSchedule).name == 'Первая неделя' ? 0 : 1;
+
     }
   }
 
@@ -44,47 +40,54 @@ class _SchedulePageState extends State<SchedulePage> {
     print(_isAuth);
     // _getSchedule();
 
-    return NotificationListener<OverscrollIndicatorNotification>(
-      onNotification: (overScroll) {
-        overScroll.disallowIndicator();
-        return true;
-      },
-      child: _isAuth ? PageView(
-        controller: pageController,
-        children: [
-          ScheduleWeekPage(
-            schedule: _allSchedule,
-            currentWeekNumber: _currentWeekNumber,
-            function: () {
-              pageController.animateToPage(1,
-                  curve: Curves.easeInOut,
-                  duration: Duration(milliseconds: 500));
+    return _allSchedule != null
+        ? NotificationListener<OverscrollIndicatorNotification>(
+            onNotification: (overScroll) {
+              overScroll.disallowIndicator();
+              return true;
             },
-          ),
-          ScheduleTodayPage(
-              functionL: () {
-                pageController.animateToPage(0,
-                    curve: Curves.easeInOut,
-                    duration: Duration(milliseconds: 500));
-              },
-              functionR: () {
-                pageController.animateToPage(2,
-                    curve: Curves.easeInOut,
-                    duration: Duration(milliseconds: 500));
-              },
-              day: _today),
-          ScheduleTomorrow(
-            day: _tomorrow,
-            functionL: () {
-              pageController.animateToPage(1,
-                  curve: Curves.easeInOut,
-                  duration: Duration(milliseconds: 500));
-            },
-          ),
-        ],
-      )
-    : _notAuth(),
-    );
+            child: _isAuth
+                ? PageView(
+                    controller: pageController,
+                    children: [
+                      ScheduleWeekPage(
+                        schedule: _allSchedule!,
+                        currentWeekNumber: _currentWeekNumber,
+                        function: () {
+                          pageController.animateToPage(1,
+                              curve: Curves.easeInOut,
+                              duration: Duration(milliseconds: 500));
+                        },
+                      ),
+                      ScheduleTodayPage(
+                          functionL: () {
+                            pageController.animateToPage(0,
+                                curve: Curves.easeInOut,
+                                duration: Duration(milliseconds: 500));
+                          },
+                          functionR: () {
+                            pageController.animateToPage(2,
+                                curve: Curves.easeInOut,
+                                duration: Duration(milliseconds: 500));
+                          },
+                          day: _today!),
+                      ScheduleTomorrow(
+                        day: _tomorrow!,
+                        functionL: () {
+                          pageController.animateToPage(1,
+                              curve: Curves.easeInOut,
+                              duration: const Duration(milliseconds: 500));
+                        },
+                      ),
+                    ],
+                  )
+                : _notAuth(),
+          )
+        : const Center(
+            child: CircularProgressIndicator(
+              backgroundColor: blueBgColor,
+            ),
+          );
   }
 
   Widget _notAuth() {
@@ -124,10 +127,21 @@ class _SchedulePageState extends State<SchedulePage> {
     );
   }
 
-  Future<void> _getSchedule() async{
+  Future<void> _getSchedule() async {
     try {
-      _allSchedule = await service.getSchedule().then((value) => value);
-    }catch(e){
+      var schedule = await service.getSchedule().then((value) => value);
+      setState(() {
+        _allSchedule = schedule;
+        if (_allSchedule != null) {
+          _today = service.getToday(_allSchedule!);
+          _tomorrow = service.getTomorrow(_allSchedule!);
+          _currentWeekNumber =
+          service.getCurrentWeek(_allSchedule!).name == 'Первая неделя'
+              ? 0
+              : 1;
+        }
+      });
+    } catch (e) {
       print(e);
     }
   }
@@ -135,8 +149,7 @@ class _SchedulePageState extends State<SchedulePage> {
   void _updateData() {
     setState(() {
       _isAuth = UserService.userIsAuth;
-      if (_isAuth) {
-      }
+      if (_isAuth) {}
     });
   }
 }
